@@ -31,17 +31,18 @@ struct Record {
 }
 
 impl Record {
-	fn new(to: String, from: String, amount: f64) -> Record {
-		let time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_else(|e| {
-			println!("SystemTime before UNIX EPOCH!\n\t{}",e);
-			process::exit(1);
-		});		
-		Record {
-			time: time.as_nanos(),
+	fn new(to: String, from: String, amount: f64) -> Result<Record, &'static str> {
+		let mut _time: u128 = 0;
+		match SystemTime::now().duration_since(UNIX_EPOCH) {
+			Ok(t) => _time = t.as_nanos(),
+			Err(_) => return Err("YOU ARE IN ERROR!\n\tSYSTEM TIME BEFORE EPOCH TIME!"),
+		}
+		Ok(Record {
+			time: _time,
 			to: to,
 			from: from,
 			amount: amount,
-		}
+		})
 	}
 }
 
@@ -52,7 +53,15 @@ fn main() -> io::Result<()> {
 		println!("Problem parsing arguments: {}", e);
 		process::exit(1);
 	});
+
+	let a_record = Record::new(String::from("Bob"), String::from("Alice"), 100.0)
+		.unwrap_or_else(|e| {
+			println!("System Error: {}", e);
+			process::exit(2);
+		});
+
 	println!("Key: {}\nin_file: {}\nout_file: {}", args.key, args.in_file, args.out_file);
+	println!("Time: {}\tTo: {}\tFrom: {}\tAmount: {}\n", a_record.time, a_record.to, a_record.from, a_record.amount);
 		
 	let mut f = File::open(args.in_file)?;
 	let of = args.out_file;
