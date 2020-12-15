@@ -5,6 +5,19 @@ use std::env;
 use std::process;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+// this is silly code, intended to learning about crypto currencies
+// and more playing around with rust. 
+// It's great that there are a tone of libraries for doing stuff in rust, 
+// but I want to get better at just usting core and std
+
+// hash record, add hash to record, 
+// add record to block, block size can be 10, for now.
+// hash block
+
+fn xor_hash() {
+	
+}
+
 
 const CSV_HEADER: &'static str = "time:u128, to:String, from:String, amount:f64\n";
 
@@ -31,6 +44,7 @@ struct Record {
 	to: String,
 	from: String,
 	amount: f64,
+	hash: String,
 }
 
 impl Record {
