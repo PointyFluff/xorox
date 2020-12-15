@@ -5,6 +5,9 @@ use std::env;
 use std::process;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+
+const CSV_HEADER: &'static str = "time:u128, to:String, from:String, amount:f64\n";
+
 struct Args {
 	key: String,
 	in_file: String,
@@ -61,7 +64,7 @@ fn main() -> io::Result<()> {
 		});
 
 	println!("Key: {}\nin_file: {}\nout_file: {}", args.key, args.in_file, args.out_file);
-	println!("Time: {}\tTo: {}\tFrom: {}\tAmount: {}\n", a_record.time, a_record.to, a_record.from, a_record.amount);
+	println!("Time: {}To: {}From: {}Amount: {}", a_record.time, a_record.to, a_record.from, a_record.amount);
 		
 	let mut f = File::open(args.in_file)?;
 	let of = args.out_file;
