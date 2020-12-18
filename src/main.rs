@@ -14,9 +14,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 // add record to block, block size can be 10, for now.
 // hash block
 
-fn xor_hash() {
-	
-}
+
+
 
 
 const CSV_HEADER: &'static str = "time:u128, to:String, from:String, amount:f64\n";
@@ -50,17 +49,33 @@ struct Record {
 impl Record {
 	fn new(to: String, from: String, amount: f64) -> Result<Record, &'static str> {
 		let mut _time: u128 = 0;
+		let mut _hash = String::new(); // empty string 
+		// hurr hurr, if let go brrrr...
 		match SystemTime::now().duration_since(UNIX_EPOCH) {
 			Ok(t) => _time = t.as_nanos(),
 			Err(_) => return Err("YOU ARE IN ERROR!\n\tSYSTEM TIME BEFORE EPOCH TIME!"),
 		}
+
 		Ok(Record {
 			time: _time,
 			to: to,
 			from: from,
 			amount: amount,
+			hash: Record::hash_xor(&String::from("messsage")) // message should be the record filds, but I gotta go for now...
 		})
 	}
+
+	// lol, this function works. 
+    fn hash_xor(message: &String) -> String {
+        let mut buffer = vec![7 as u8; 256]; //empty buffer of zeros!
+        let bytes = message.as_bytes();
+        for (j, i) in buffer.iter_mut().enumerate() {
+            *i ^= bytes[(j%bytes.len())];
+        }
+        
+        let hash: String = String::from_utf8(buffer).unwrap();
+        hash
+    }
 }
 
 fn main() -> io::Result<()> {
