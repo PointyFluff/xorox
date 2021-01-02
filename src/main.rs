@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::io;
 use std::io::prelude::*;
 use std::fs::{self, File};
@@ -5,20 +6,47 @@ use std::env;
 use std::process;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-// this is silly code, intended to learning about crypto currencies
-// and more playing around with rust. 
-// It's great that there are a tone of libraries for doing stuff in rust, 
-// but I want to get better at just usting core and std
-
-// hash record, add hash to record, 
-// add record to block, block size can be 10, for now.
-// hash block
-
-
-
-
-
 const CSV_HEADER: &'static str = "time:u128, to:String, from:String, amount:f64\n";
+/*
+	# holiday grains = post holiday brains
+	# where am I?
+	# what whas I doin?
+	# what language even is this?
+	# who wrote this?
+	# how do I comment?
+*/
+
+fn write_csv_file() {
+
+}
+
+fn read_csv_file() {
+
+}
+
+// need a p2p daemon
+
+
+// lol, this function works. 
+fn hash_xor(message: &String) -> String {
+	let mut buffer = vec![1u8; 256]; //empty buffer of ones, sometimes a too
+	let bytes = message.as_bytes();
+	for (j, i) in buffer.iter_mut().enumerate() {
+		*i ^= bytes[(j%bytes.len())];
+	}
+	let hash: String = String::from_utf8(buffer).unwrap();
+	hash
+}
+
+fn sausage_to_pig() {}
+
+fn nano_squanch() -> u128 {
+	let mut _time: u128 = 0;
+	if let Ok(t) = SystemTime::now().duration_since(UNIX_EPOCH) {
+		_time = t.as_nanos();
+	} else { panic!("SYSTEM TIME BEFORE EPOCH TIME"); } // halt here, this should never happen.
+	_time
+}
 
 struct Args {
 	key: String,
@@ -43,39 +71,22 @@ struct Record {
 	to: String,
 	from: String,
 	amount: f64,
+	last_hash: String,
 	hash: String,
 }
 
 impl Record {
-	fn new(to: String, from: String, amount: f64) -> Result<Record, &'static str> {
-		let mut _time: u128 = 0;
-		let mut _hash = String::new(); // empty string 
-		// hurr hurr, if let go brrrr...
-		match SystemTime::now().duration_since(UNIX_EPOCH) {
-			Ok(t) => _time = t.as_nanos(),
-			Err(_) => return Err("YOU ARE IN ERROR!\n\tSYSTEM TIME BEFORE EPOCH TIME!"),
-		}
-
-		Ok(Record {
-			time: _time,
+	fn new(to: String, from: String, amount: f64, last_hash: String) -> Record {
+		let t = nano_squanch();
+		Record {
+			time: t,
 			to: to,
 			from: from,
 			amount: amount,
-			hash: Record::hash_xor(&String::from("messsage")) // message should be the record filds, but I gotta go for now...
-		})
+			last_hash: last_hash,	
+			hash: hash_xor(&String::from("sfef aefaef arf bqrtn wret wrsgfdga df aret bretn wrtymn erm76e,65, 7ertwynwer6jnhw54me567myew54tynwsretb")) // message should be the record filds, but I gotta go for now...
+		}
 	}
-
-	// lol, this function works. 
-    fn hash_xor(message: &String) -> String {
-        let mut buffer = vec![7 as u8; 256]; //empty buffer of zeros!
-        let bytes = message.as_bytes();
-        for (j, i) in buffer.iter_mut().enumerate() {
-            *i ^= bytes[(j%bytes.len())];
-        }
-        
-        let hash: String = String::from_utf8(buffer).unwrap();
-        hash
-    }
 }
 
 fn main() -> io::Result<()> {
@@ -86,14 +97,10 @@ fn main() -> io::Result<()> {
 		process::exit(1);
 	});
 
-	let a_record = Record::new(String::from("Bob"), String::from("Alice"), 100.0)
-		.unwrap_or_else(|e| {
-			println!("System Error: {}", e);
-			process::exit(2);
-		});
+	let a_record = Record::new(String::from("Bob"), String::from("Alice"), 100.0, hash_xor(&String::from("firsthash")));
 
 	println!("Key: {}\nin_file: {}\nout_file: {}", args.key, args.in_file, args.out_file);
-	println!("Time: {}To: {}From: {}Amount: {}", a_record.time, a_record.to, a_record.from, a_record.amount);
+	println!("Time: {}\nTo: {}\nFrom: {}\nAmount: {}\nLast Hash: {:2X?}\nHash: {:2X?}\n", a_record.time, a_record.to, a_record.from, a_record.amount, a_record.last_hash.as_bytes(), a_record.hash.as_bytes());
 		
 	let mut f = File::open(args.in_file)?;
 	let of = args.out_file;
