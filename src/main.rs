@@ -14,8 +14,10 @@ const CSV_HEADER: &'static str = "time:u128, to:String, from:String, amount:f64\
 	# what language even is this?
 	# who wrote this?
 	# how do I comment?
+	# I have no idea what I'm doing, lolz.
 */
 
+// should probabl write some file stuffs here...
 fn write_csv_file() {
 
 }
@@ -28,6 +30,7 @@ fn read_csv_file() {
 
 
 // lol, this function works. 
+// cryptograpically dumb. 
 fn hash_xor(message: &String) -> String {
 	let mut buffer = vec![1u8; 256]; //empty buffer of ones, sometimes a too
 	let bytes = message.as_bytes();
@@ -37,6 +40,10 @@ fn hash_xor(message: &String) -> String {
 	let hash: String = String::from_utf8(buffer).unwrap();
 	hash
 }
+
+// input: Sausage
+// returns: Pig
+// *Note: 100% pork products must be used to avoid reverse-fly scenarios 
 
 fn sausage_to_pig() {}
 
